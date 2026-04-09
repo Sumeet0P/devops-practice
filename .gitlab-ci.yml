@@ -14,8 +14,17 @@ build-and-push:
   script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-    - docker build -t $DOCKER_USERNAME/server:$CI_COMMIT_SHORT_SHA/server:latest ./app/server
-    - docker build -t $DOCKER_USERNAME/client:$CI_COMMIT_SHORT_SHA/client:latest ./app/client
+    # Build
+    - docker build -t $DOCKER_USERNAME/server:$CI_COMMIT_SHORT_SHA ./app/server
+    - docker build -t $DOCKER_USERNAME/client:$CI_COMMIT_SHORT_SHA ./app/client
 
+    # Tag latest
+    - docker tag $DOCKER_USERNAME/server:$CI_COMMIT_SHORT_SHA $DOCKER_USERNAME/server:latest
+    - docker tag $DOCKER_USERNAME/client:$CI_COMMIT_SHORT_SHA $DOCKER_USERNAME/client:latest
+
+    # Push
+    - docker push $DOCKER_USERNAME/server:$CI_COMMIT_SHORT_SHA
     - docker push $DOCKER_USERNAME/server:latest
+
+    - docker push $DOCKER_USERNAME/client:$CI_COMMIT_SHORT_SHA
     - docker push $DOCKER_USERNAME/client:latest
