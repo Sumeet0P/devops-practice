@@ -4,25 +4,18 @@ services:
   - docker:dind
 
 stages:
-  - build
-  - push
+  - build_push
 
 variables:
   DOCKER_DRIVER: overlay2
 
-build-server:
-  stage: build
-  script:
-    - docker build -t $DOCKER_USERNAME/server:latest ./app/server
-
-build-client:
-  stage: build
-  script:
-    - docker build -t $DOCKER_USERNAME/client:latest ./app/client
-
-push-images:
-  stage: push
+build-and-push:
+  stage: build_push
   script:
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+    - docker build -t $DOCKER_USERNAME/server:latest ./app/server
+    - docker build -t $DOCKER_USERNAME/client:latest ./app/client
+
     - docker push $DOCKER_USERNAME/server:latest
     - docker push $DOCKER_USERNAME/client:latest
