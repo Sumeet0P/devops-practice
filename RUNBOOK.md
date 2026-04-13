@@ -67,6 +67,9 @@ kubectl rollout restart deployment client -n devops
 ### Access Grafana
 kubectl port-forward svc/monitoring-grafana 3000:80 -n monitoring
 
+#### For password
+kubectl get secret monitoring-grafana -n monitoring -o jsonpath="{.data.admin-password}" | base64 --decode
+
 ### Access Prometheus
 kubectl port-forward svc/monitoring-kube-prometheus-prometheus 9090:9090 -n monitoring
 
