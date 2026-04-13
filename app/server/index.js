@@ -2,6 +2,7 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
+const client = require("prom-client")
 
 app.use(cors({
   origin: [
@@ -12,6 +13,11 @@ app.use(cors({
 
 app.get("/api", (req, res) => {
   res.json({ message: "Hello from Backend 🚀" });
+});
+
+app.get("/metrics", async (req, res) => {
+  res.set("Content-Type", client.register.contentType);
+  res.end(await client.register.metrics());
 });
 
 app.listen(5000, () => console.log("Server running on port 5000"));
